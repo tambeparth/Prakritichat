@@ -1,18 +1,17 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { Configuration, OpenAIApi } from 'openai';
-import fetch from 'node-fetch'; // Add this import statement
+import openai from 'openai'; // Import the openai package
 
 dotenv.config();
 
 console.log(process.env.OPENAI_API_KEY);
 
-const configuration = new Configuration({
-    apikey: process.env.OPENAI_API_KEY, // Correct the API key variable name
-});
+const configuration = {
+    apiKey: process.env.OPENAI_API_KEY, // Correct the API key variable name
+};
 
-const openai = new OpenAIApi(configuration); // Pass the correct configuration object
+const openaiInstance = openai; // Use the imported module directly
 
 const app = express();
 app.use(cors());
@@ -27,17 +26,17 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res) => {
     try {
         const prompt = req.body.prompt;
-        const response = await openai.createCompletion({
+        const response = await openaiInstance.createCompletion({
             model: "text-davinci-003",
             prompt: `${prompt}`, // Use backticks to interpolate the prompt
             temperature: 0,
-            max_tokens: 3000,
-            top_p: 1,
-            frequency_penalty: 0.5,
-            presence_penalty: 0,
+            maxTokens: 3000, // Correct the property name
+            topP: 1, // Correct the property name
+            frequencyPenalty: 0.5, // Correct the property name
+            presencePenalty: 0, // Correct the property name
         });
         res.status(200).send({
-            bot: response.data.choices[0].text, // Correct the response property name
+            bot: response.choices[0].text, // Correct the response property name
         });
     } catch (error) {
         console.log(error);
